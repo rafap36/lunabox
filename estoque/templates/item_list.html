@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Lista de Itens</title>
+</head>
+
+<body>
+  <h2>Lista de Itens</h2>
+  <form method="get">
+    <input type="text" name="localidade" placeholder="Localidade">
+    <input type="text" name="nome_item" placeholder="Nome do Item">
+    <button type="submit">Filtrar</button>
+  </form>
+  <a href="{% url 'item-create' %}">Adicionar Novo Item</a>
+  <a href="{% url 'export-items' %}">Exportar para CSV</a>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Quantidade</th>
+        <th>Preço</th>
+        <th>Localidade</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.nome }}</td>
+        <td>{{ item.quantidade }}</td>
+        <td>{{ item.preco }}</td>
+        <td>{{ item.localidade.nome }}</td>
+        <td>
+          <a href="{% url 'item-update' item.pk %}">Editar</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Adicionar/Editar Item</title>
+</head>
+
+<body>
+  <h2>Adicionar/Editar Item</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+  </form>
+  <a href="{% url 'item-list' %}">Voltar para a lista</a>
+</body>
+
+</html>

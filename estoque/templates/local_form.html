@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Cadastrar Localidade</title>
+</head>
+
+<body>
+  <h2>Cadastrar Nova Localidade</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="id_nome">Nome:</label>
+    <input type="text" id="id_nome" name="nome" required>
+    <button type="submit">Cadastrar</button>
+  </form>
+  <a href="{% url 'item-list' %}">Voltar para a lista de itens</a>
+</body>
+
+</html>

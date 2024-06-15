@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Lista de Usuários</title>
+</head>
+
+<body>
+  <h2>Lista de Usuários</h2>
+  <a href="{% url 'user-create' %}">Adicionar Novo Usuário</a>
+  <ul>
+    {% for user in users %}
+    <li>{{ user.username }} - {{ user.groups.all|join:", " }}</li>
+    {% endfor %}
+  </ul>
+</body>
+
+</html>
