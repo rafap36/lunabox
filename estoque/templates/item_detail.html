@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Detalhes do Item</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h2 {
+      color: #0077b6;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    p {
+      margin-bottom: 10px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      padding-top: 60px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      width: 80%;
+      max-width: 700px;
+      animation-name: zoom;
+      animation-duration: 0.6s;
+    }
+
+    @keyframes zoom {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .action-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      margin: 10px;
+      background-color: #0077b6;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .action-btn:hover {
+      background-color: #005f99;
+    }
+
+    .navbar {
+    background-color: #666666;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.navbar-left a:hover {
+    text-decoration: underline;
+}
+
+.navbar-right {
+    padding: 0 35px;
+    font-size: 16px;
+    color: #fff;
+}
+
+.navbar-right a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    padding: 8px 12px;
+    border: 1px solid #fff;
+    border-radius: 4px;
+}
+
+.navbar-right a:hover {
+    text-decoration: underline;
+}
+
+.navbar .logo-img {
+    max-height: 30px;
+    /* Ajuste o tamanho conforme necessário */
+    margin-right: 10px;
+    /* Espaçamento entre o logo e os botões */
+}
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <a href="{% url 'dashboard' %}">
+        <img src="{% static 'midia/Logo_DeLuna.png' %}" alt="D-Luna" class="logo-img">
+      </a>
+      <a href="{% url 'item-list' %}" style="color: #fff; text-decoration: none;">Itens</a>
+      <a href="{% url 'localidade-list' %}" style="color: #fff; text-decoration: none;">Filiais</a>
+      <a href="{% url 'admin:index' %}" style="color: #fff; text-decoration: none;">Administração</a>
+    </div>
+    <div class="navbar-right">
+      <span>Bem-vindo, {{ user.username }}</span>
+      <a href="{% url 'logout' %}">Sair</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Detalhes do Item</h2>
+    <p><strong>Nome:</strong> {{ object.nome }}</p>
+    <p><strong>Quantidade:</strong> {{ object.quantidade }}</p>
+    <p><strong>Preço:</strong> {{ object.preco }}</p>
+    <p><strong>Localidade:</strong> {{ object.localidade }}</p>
+    <p><strong>Data de criação:</strong> {{ object.data_criacao }}</p>
+    <p><strong>Criado por:</strong> {{ object.criador_por }}</p>
+    <p><strong>GL Category:</strong> {{ object.GL_category }}</p>
+    <p><strong>Descrição:</strong> {{ object.descricao }}</p>
+    <p><strong>Asset Class:</strong> {{ object.asset_class }}</p>
+
+
+    {% if object.image %}
+    <p><strong>Imagem:</strong> <img id="myImg" src="{{ object.image.url }}" alt="{{ object.nome }}"
+        style="width:100%;max-width:300px"></p>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="img01">
+      <div id="caption"></div>
+    </div>
+    {% else %}
+    <p><strong>Imagem:</strong> Sem imagem disponível</p>
+    {% endif %}
+
+    <a class="action-btn" href="{% url 'item-list' %}">Voltar para a lista</a>
+  </div>
+
+  <script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the image and insert it inside the modal - use its "alt" text as a caption
+    var img = document.getElementById("myImg");
+    var modalImg = document.getElementById("img01");
+    var captionText = document.getElementById("caption");
+
+    if (img) {
+      img.onclick = function () {
+        modal.style.display = "block";
+        modalImg.src = this.src;
+        captionText.innerHTML = this.alt;
+      }
+    }
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+      modal.style.display = "none";
+    }
+  </script>
+</body>
+
+</html>

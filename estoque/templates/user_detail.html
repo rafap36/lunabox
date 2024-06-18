@@ -1,0 +1,18 @@
+<!-- user_detail.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Detalhes do Usuário: {{ user.username }}</h1>
+
+<h2>Histórico de Ações</h2>
+<ul>
+  {% for action in user_actions %}
+  <li>{{ action.action_type }} - {{ action.action_date }}</li>
+  {% empty %}
+  <li>Nenhuma ação registrada.</li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'user-list' %}">Voltar para a lista de usuários</a>
+{% endblock %}

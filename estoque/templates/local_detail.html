@@ -1,0 +1,209 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da Localidade</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 80px auto 20px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #2980b9;
+      margin-bottom: 20px;
+    }
+
+    .glass-card-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+      width: 30%;
+      color: #333;
+      margin-bottom: 0;
+    }
+
+    .glass-card strong {
+      display: block;
+      margin-bottom: 10px;
+      color: #2980b9;
+    }
+
+    .filter-form {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-form input,
+    .filter-form button {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .filter-form button {
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .filter-form button:hover {
+      background-color: #1f639b;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: #f9f9f9;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar {
+      background-color: #666666;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .navbar-left a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar-right {
+      padding: 0 35px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .navbar-right a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 12px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+    }
+
+    .navbar-right a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar .logo-img {
+      max-height: 30px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <div class="navbar-left">
+      <a href="{% url 'dashboard' %}">
+        <img src="{% static 'midia/Logo_DeLuna.png' %}" alt="D-Luna" class="logo-img">
+      </a>
+      <a href="{% url 'item-list' %}">Itens</a>
+      <a href="{% url 'localidade-list' %}">Filiais</a>
+      <a href="{% url 'admin:index' %}">Administração</a>
+    </div>
+    <div class="navbar-right">
+      <span>Bem-vindo, {{ user.username }}</span>
+      <a href="{% url 'logout' %}">Sair</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Detalhes da Localidade: {{ localidade.nome }}</h2>
+
+    <div class="glass-card-container">
+      <div class="glass-card">
+        <strong>Endereço:</strong>
+        <p>{{ localidade.endereco }}</p>
+      </div>
+      <div class="glass-card">
+        <strong>Total de Itens:</strong>
+        <p>{{ total_itens }}</p>
+      </div>
+      <div class="glass-card">
+        <strong>Valor Total em Estoque:</strong>
+        <p>R$ {{ valor_total_estoque }}</p>
+      </div>
+    </div>
+
+    <h3>Filtros:</h3>
+    <form method="GET" class="filter-form">
+      <input type="text" name="search" placeholder="Nome do Item" value="{{ request.GET.search }}">
+      <button type="submit">Filtrar</button>
+    </form>
+
+    <h3>Produtos:</h3>
+    <ul>
+      {% for item in itens %}
+      <li>{{ item.nome }} - Quantidade: {{ item.quantity }} - Valor Unitário: R$ {{ item.preco }} - Valor
+        Total: R$ {{ item.valor_total }}</li>
+      {% empty %}
+      <li>Nenhum produto encontrado nesta localidade.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</body>
+
+</html>

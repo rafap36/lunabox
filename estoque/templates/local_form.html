@@ -1,19 +1,206 @@
+{% load static %}
+{% load custom_filters %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Cadastrar Localidade</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    h2 {
+      color: #0077b6;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #0077b6;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005f99;
+    }
+
+    a {
+      text-decoration: none;
+      color: #0077b6;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #333;
+    }
+
+    td a {
+      margin-right: 10px;
+      color: #0077b6;
+    }
+
+    td a:hover {
+      color: #005f99;
+    }
+
+    .navbar {
+      background-color: #666666;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .navbar-left a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar-right {
+      padding: 0 35px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .navbar-right a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 12px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+    }
+
+    .navbar-right a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar .logo-img {
+      max-height: 30px;
+      /* Ajuste o tamanho conforme necessário */
+      margin-right: 10px;
+      /* Espaçamento entre o logo e os botões */
+    }
+  </style>
 </head>
 
 <body>
-  <h2>Cadastrar Nova Localidade</h2>
-  <form method="post">
-    {% csrf_token %}
-    <label for="id_nome">Nome:</label>
-    <input type="text" id="id_nome" name="nome" required>
-    <button type="submit">Cadastrar</button>
-  </form>
-  <a href="{% url 'item-list' %}">Voltar para a lista de itens</a>
+  <!-- Navbar -->
+
+  <div class="navbar">
+    <div class="navbar-left">
+      <a href="{% url 'dashboard' %}">
+        <img src="{% static 'midia/Logo_DeLuna.png' %}" alt="D-Luna" class="logo-img">
+      </a>
+      <a href="{% url 'item-list' %}" style="color: #fff; text-decoration: none;">Itens</a>
+      <a href="{% url 'localidade-list' %}" style="color: #fff; text-decoration: none;">Filiais</a>
+      <a href="{% url 'admin:index' %}" style="color: #fff; text-decoration: none;">Administração</a>
+    </div>
+    <div class="navbar-right">
+      <span>Bem-vindo, {{ user.username }}</span>
+      <a href="{% url 'logout' %}">Sair</a>
+    </div>
+  </div>
+
+  <div class="container">
+    {% block content %}
+    <h2>Lista de Itens</h2>
+    <form method="get">
+      <input type="text" name="localidade" placeholder="Localidade">
+      <input type="text" name="nome_item" placeholder="Nome do Item">
+      <button type="submit">Filtrar</button>
+    </form>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Quantidade</th>
+          <th>Preço</th>
+          <th>Total</th>
+          <th>Localidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for local in object_list %}
+        <tr>
+          <td><a href="{% url 'item-detail' item.pk %}">{{ local.nome }}</a></td>
+          <td>{{ local.nome }}</td>
+          <!-- Calcula o total usando o filtro personalizado 'multiply' -->
+          <td>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endblock %}
+  </div>
+
 </body>
 
 </html>

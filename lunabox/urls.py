@@ -16,14 +16,29 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from estoque.views import ItemListView, LocalidadeCreateView
+from estoque.views import ItemListView, LocalidadeCreateView, UserListView, ItemCreateView, ItemUpdateView, UserCreateView, export_items_to_csv, ItemDeleteView, ItemDetailView, DashboardView, UserDetailView, LocalDetailView
 from estoque.views import CustomLoginView, CustomLogoutView
+from django.conf import settings
+from django.conf.urls.static import static
+from estoque import views
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('itens/', include('estoque.urls')),  # Inclua as URLs do aplicativo estoque
-    path('usuarios/', include('estoque.urls')),  # Inclua as URLs do aplicativo estoque
-    path('login/', CustomLoginView.as_view(), name='login'),  # Rota para a página de login
-    path('logout/', CustomLogoutView.as_view(), name='logout'),  # Rota para a página de logout
-    path('localidade/', include('estoque.urls')),  # Inclua as URLs do aplicativo estoque
-]
+  path('itens/', ItemListView.as_view(), name='item-list'),
+  path('itens/novo', ItemCreateView.as_view(), name='item-create'),
+  path('itens/<int:pk>/editar/', ItemUpdateView.as_view(), name='item-update'),
+  path('usuarios/', UserListView.as_view(), name='user-list'),
+  path('usuarios/novo', UserCreateView.as_view(), name='user-create'),
+  path('itens/export', export_items_to_csv, name='export-items'),
+  path('localidade/', LocalidadeCreateView.as_view(), name='local-create'),
+  path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+  path('logout/', CustomLogoutView.as_view(), name='logout'),
+  path('itens/<int:pk>;deletar', ItemDeleteView.as_view(), name='item-delete'),
+  path('itens/<int:pk>/', ItemDetailView.as_view(), name='item-detail'),
+  path('', DashboardView.as_view(), name='dashboard'),
+  path('grappelli/', include('grappelli.urls')),  # Adiciona esta linha
+  path('admin/', admin.site.urls, name='admin'),
+  path('users/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
+  path('localidades/', views.localidade_list, name='localidade-list'),
+  path('localidades/<int:pk>/', LocalDetailView.as_view(), name='local-detail'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

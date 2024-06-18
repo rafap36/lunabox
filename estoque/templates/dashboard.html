@@ -1,0 +1,318 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.css"
+    integrity="sha512-9M7dm4R5oy8c2//MBhWZyP+uJZG1VXj6IK0kJjJN6J89iJvFmJzIStEBCbUHzvBvBMzL7zEyCqlhjYw1yFzCGQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background-color: #666666;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    .navbar-left a:hover {
+      text-decoration: underline;
+    }
+
+    .navbar-right {
+      padding: 0 35px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .navbar-right a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 12px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+    }
+
+    .navbar-right a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 2000px;
+      margin: 80px auto 20px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section h2 {
+      color: #28272b;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    .info {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .info strong {
+      color: #28272b
+    }
+
+    .charts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .chart-container {
+      flex: 5%;
+      margin-bottom: 20px;
+      margin-right: 5px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-container canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    .navbar .logo-img {
+      max-height: 30px;
+      margin-right: 10px;
+    }
+
+    .small-chart {
+      flex: 5%;
+      /* Ajuste o tamanho conforme necessário */
+    }
+
+    .small-chart canvas {
+      width: 50% !important;
+      height: auto !important;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+      width: 30%;
+      margin-right: 2%;
+    }
+
+    .glass-card-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .filter-form {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-form label,
+    .filter-form select,
+    .filter-form button {
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .filter-form button {
+      padding: 10px 20px;
+      background-color: #666666;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .filter-form button:hover {
+      background-color: #555555;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <a href="{% url 'dashboard' %}">
+        <img src="{% static 'midia/Logo_DeLuna.png' %}" alt="D-Luna" class="logo-img">
+      </a>
+      <a href="{% url 'item-list' %}">Itens</a>
+      <a href="{% url 'localidade-list' %}">Filiais</a>
+      <a href="{% url 'admin:index' %}">Administração</a>
+    </div>
+    <div class="navbar-right">
+      <span>Bem-vindo, {{ user.username }}</span>
+      <a href="{% url 'logout' %}">Sair</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Informações Gerais</h2>
+    <div class="glass-card-container">
+      <div class="glass-card">
+        <p class="info"><strong>Total de Itens:</strong> {{ total_itens }}</p>
+      </div>
+      <div class="glass-card">
+        <p class="info"><strong>Total de Localidades:</strong> {{ total_localidades }}</p>
+      </div>
+      <div class="glass-card">
+        <p class="info"><strong>Valor Total em Estoque:</strong> R$ {{ valor_total_estoque }}</p>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="section">
+      <h2>Filtros</h2>
+      <form action="{% url 'dashboard' %}" method="GET" class="filter-form">
+        <label for="categoria">Selecione a Categoria:</label>
+        <select name="categoria" id="categoria">
+          <option value="">Todas as Categorias</option>
+          {% for item in categorias %}
+          <option value="{{ item.GL_category }}">{{ item.GL_category }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="filial">Selecione a Filial:</label>
+        <select name="filial" id="filial">
+          <option value="">Todas as Filiais</option>
+          {% for filial in filiais %}
+          <option value="{{ filial.id }}">{{ filial.nome }}</option>
+          {% endfor %}
+        </select>
+
+        <button type="submit">Filtrar</button>
+      </form>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="section">
+      <h2></h2>
+      <div class="charts">
+        <!-- Gráfico de Barras -->
+        <div class="chart-container">
+          <canvas id="barChart"></canvas>
+        </div>
+
+        <!-- Gráfico de Barras -->
+        <div class="chart-container">
+          <canvas id="barChart2"></canvas>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bibliotecas JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.0.0"></script>
+
+  <script>
+    const barChartData = {
+      labels: [{% for item in categorias %}"{{ item.GL_category }}", {% endfor %}],
+    datasets: [{
+      label: 'Quantidade de Itens por Categoria',
+      data: [{% for item in categorias %}{{ item.count }}, {% endfor %}],
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+      }]
+    };
+
+    const barChartData2 = {
+      labels: [{% for item in categorias %}"{{ item.GL_category }}", {% endfor %}],
+    datasets: [{
+      label: 'Quantidade de Itens por Categoria',
+      data: [{% for item in categorias %}{{ item.count }}, {% endfor %}],
+      backgroundColor: 'rgba(0, 0, 139, 0.5)',
+        borderColor: 'rgba(0, 1, 0, 1)',
+          borderWidth: 1
+      }]
+    };
+
+    const barChartConfig = {
+      type: 'bar',
+      data: barChartData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: 'Quantidade de Itens por Categoria' }
+        }
+      }
+    };
+
+    const barChartConfig2 = {
+      type: 'bar',
+      data: barChartData2,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: 'Mudar' }
+        }
+      }
+    };
+
+    // Inicializa os gráficos
+    new Chart(document.getElementById('barChart').getContext('2d'), barChartConfig);
+    new Chart(document.getElementById('barChart2').getContext('2d'), barChartConfig2);
+
+  </script>
+</body>
+
+</html>

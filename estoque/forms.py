@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 class Itemform(forms.ModelForm):
   class Meta:
     model = Item
-    fields = ['nome', 'quantity', 'preco', 'localidade', 'GL_category', 'descricao', 'asset_class']
+    fields = ['nome', 'quantity', 'preco', 'localidade', 'GL_category', 'descricao', 'asset_class', 'image']
 
 
 class UserCreationForm(forms.ModelForm):
